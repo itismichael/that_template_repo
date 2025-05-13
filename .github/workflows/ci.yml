@@ -53,7 +53,7 @@ jobs:
     - name: Security scan (Bandit)
       run: |
         source .venv/bin/activate
-        bandit -r src examples -c pyproject.toml -ll -ii --exit-code 1
+        bandit -r src examples -c pyproject.toml -ll -ii
 
     - name: Dependency Vulnerability Scan (pip-audit)
       run: |
