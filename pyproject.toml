@@ -3,7 +3,7 @@ name = "your-project-name"
 version = "0.3.2"
 description = "A brief description of your project."
 readme = "README.md"
-requires-python = ">=3.9" # Package supports Python 3.9+; template dev env targets 3.11.
+requires-python = ">=3.10" # Package supports Python 3.10+; template dev env targets 3.11.
 license = { file = "LICENSE.md" }
 authors = [
   { name = "Your Name", email = "you@example.com" },

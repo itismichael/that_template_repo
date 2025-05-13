@@ -1,3 +1,4 @@
+import re
 import subprocess
 import sys
 
@@ -69,11 +70,16 @@ def test_cli_help():
         check=False,  # Don't raise exception on non-zero exit, we'll assert it
     )
 
+    # Strip ANSI escape codes from stdout for more robust assertions
+    # Pattern for ANSI escape codes
+    ansi_escape_pattern = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-9:;<=>?]*[ -/]*[@-~])")
+    cleaned_stdout = ansi_escape_pattern.sub("", result.stdout)
+
     assert result.returncode == 0
-    assert "Usage:" in result.stdout
+    assert "Usage:" in cleaned_stdout
     assert (
-        "Say hello and demonstrate core library functionality." in result.stdout
+        "Say hello and demonstrate core library functionality." in cleaned_stdout
     )  # MODIFIED: Check for command description
     # Add more assertions as needed, e.g., checking for specific options
-    assert "--name" in result.stdout
-    assert "--count" in result.stdout
+    assert "--name" in cleaned_stdout
+    assert "--count" in cleaned_stdout
