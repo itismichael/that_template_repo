@@ -171,12 +171,14 @@ tasks:
     silent: true
 
   cz:bump:
-    desc: "Bump version and create tag using Commitizen (dry run by default). Use 'task cz:bump -- --no-dry-run' to apply and then run 'task release:push'."
+    desc: "Bump version and create tag. Dry run by default ('task cz:bump'). To apply: 'task cz:bump -- --no-dry-run'. Then 'task release:push'."
     deps: [setup]
     cmds:
-      - "{{.COMMITIZEN}} bump --dry-run {{.CLI_ARGS}}"
+      - "{{.COMMITIZEN}} bump {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}--dry-run{{end}}"
     vars:
+      # Allows passing extra args like --changelog or --no-dry-run
       CLI_ARGS: "{{default \"\" .CLI_ARGS}}"
+    silent: true
 
   cz:changelog:
     desc: "Generate a changelog from conventional commits (dry run by default). Use 'task cz:changelog -- --no-dry-run' to apply."
