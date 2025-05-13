@@ -171,14 +171,11 @@ tasks:
     silent: true
 
   cz:bump:
-    desc: "Bump version and create tag. Dry run by default ('task cz:bump'). To apply: 'task cz:bump -- apply'. Then 'task release:push'."
+    desc: "Interactively bump version and create tag (shows preview, asks for confirmation)."
     deps: [setup]
+    interactive: true # Ensures 'read' in the script works
     cmds:
-      # If .CLI_ARGS is 'apply', run without --dry-run. Otherwise, include --dry-run.
-      - "{{.COMMITIZEN}} bump {{if eq .CLI_ARGS \"apply\"}}{{else}}--dry-run{{end}}"
-    vars:
-      # User passes 'apply' via '-- apply'
-      CLI_ARGS: "{{default \"\" .CLI_ARGS}}"
+      - sh ./scripts/confirm_bump.sh {{.COMMITIZEN}}
     silent: true
 
   cz:changelog:
@@ -188,6 +185,7 @@ tasks:
       - "{{.COMMITIZEN}} changelog --dry-run {{.CLI_ARGS}}"
     vars:
       CLI_ARGS: "{{default \"\" .CLI_ARGS}}"
+    silent: true
 
   # --------------------------------------------------------------------------->
   # Release Helper Tasks
