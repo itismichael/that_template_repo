@@ -38,7 +38,8 @@ tasks:
 
   setup:deps:
     desc: "Installs project dependencies and dev tools using uv."
-    deps: [setup: env] # Added space after colon
+    deps:
+      - setup:env
     # Ensure this list is correctly parsed
     sources:
       - "pyproject.toml"
@@ -53,14 +54,18 @@ tasks:
 
   setup:
     desc: "Full project setup: venv, dependencies, and pre-commit hooks."
-    deps: [setup: env, setup: deps, precommit: install] # Added spaces after colons
+    deps:
+      - setup:env
+      - setup:deps
+      - precommit:install
     cmds:
       - echo "Project setup complete. Virtual environment in '{{.VENV_DIR}}' and pre-commit hooks installed."
     silent: true
 
   lock:
     desc: "Generates requirements.lock from pyproject.toml using uv."
-    deps: [setup: env] # Ensure uv is available from the venv. Added space after colon.
+    deps:
+      - setup:env
     sources: ["pyproject.toml"]
     generates: ["requirements.lock"]
     cmds:
@@ -131,7 +136,8 @@ tasks:
   # --------------------------------------------------------------------------->
   precommit:install:
     desc: "Installs pre-commit hooks."
-    deps: [setup: deps] # Changed from 'setup' to 'setup:deps'. Added space after colon.
+    deps:
+      - setup:deps
     cmds:
       - "{{.PRECOMMIT}} install"
     silent: true
@@ -156,7 +162,7 @@ tasks:
   cz:
     desc: "Alias for 'task cz:commit'. Interactively create a commit message."
     cmds:
-      - task: cz:commit
+      - task:cz:commit
     silent: true
 
   cz:commit:
@@ -179,7 +185,7 @@ tasks:
     deps: [setup]
     interactive: true # Ensures 'read' in the script works
     cmds:
-      - sh ./scripts/confirm_bump.sh {{.COMMITIZEN}}
+      - sh -c "./scripts/confirm_bump.sh {{.COMMITIZEN}}"
     silent: true
 
   cz:changelog:
@@ -229,6 +235,9 @@ tasks:
   # --------------------------------------------------------------------------->
   docker:build:
     desc: "Builds the Docker image for the FastAPI web example (examples/web/) using the root Dockerfile."
+    deps:
+      - setup:env
+    # sources includes Dockerfile and application code for cache invalidation
     cmds:
       - docker build -t {{.IMAGE_NAME_LOCAL | default "your-app-image"}} .
     vars:
@@ -236,7 +245,8 @@ tasks:
 
   docker:run:
     desc: "Runs the FastAPI web example (examples/web/) in a Docker container from the locally built image."
-    deps: [docker: build] # Added space after colon
+    deps:
+      - docker:build
     cmds:
       - docker run -p {{.APP_PORT | default 8000}}:8000 {{.IMAGE_NAME_LOCAL | default "your-app-image"}}
     vars:
@@ -299,10 +309,10 @@ tasks:
   clean:
     desc: "Runs all clean tasks to remove temporary files and artifacts."
     cmds:
-      - task: clean:pycache
-      - task: clean:pytest
-      - task: clean:build
-      - task: clean:mkdocs
+      - task:clean:pycache
+      - task:clean:pytest
+      - task:clean:build
+      - task:clean:mkdocs
       # Note: clean:venv is intentionally excluded from the main clean task
       # as it's more destructive. Run 'task clean:venv' explicitly if needed.
     silent: true
@@ -313,8 +323,8 @@ tasks:
   init:
     desc: "Alias for 'task setup' and 'task precommit:install'. Initializes the project for development."
     cmds:
-      - task: setup
-      - task: precommit:install
+      - task:setup
+      - task:precommit:install
     silent: true
 
 # Temporary comment to force pre-commit to re-evaluate this file
