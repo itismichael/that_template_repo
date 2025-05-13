@@ -1,6 +1,6 @@
 [project]
 name = "your-project-name"
-version = "0.1.0"
+version = "0.2.0"
 description = "A brief description of your project."
 readme = "README.md"
 requires-python = ">=3.9" # Package supports Python 3.9+; template dev env targets 3.11.
@@ -117,7 +117,7 @@ pythonpath = ["."]  # ADDED: Ensure project root is in sys.path for pytest
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.1.0" # Must match [project.version]
+version = "0.2.0" # Must match [project.version]
 version_files = [
     "pyproject.toml:^version", # Path to version in pyproject.toml
     # "src/your_core_library/__init__.py:^__version__" # Uncomment if you have version here too
