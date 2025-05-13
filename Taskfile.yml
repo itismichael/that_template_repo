@@ -38,7 +38,8 @@ tasks:
 
   setup:deps:
     desc: "Installs project dependencies and dev tools using uv."
-    deps: [setup:env]
+    deps: [setup: env] # Added space after colon
+    # Ensure this list is correctly parsed
     sources:
       - "pyproject.toml"
       - "requirements.lock"
@@ -52,14 +53,14 @@ tasks:
 
   setup:
     desc: "Full project setup: venv, dependencies, and pre-commit hooks."
-    deps: [setup:env, setup:deps, precommit:install]
+    deps: [setup: env, setup: deps, precommit: install] # Added spaces after colons
     cmds:
       - echo "Project setup complete. Virtual environment in '{{.VENV_DIR}}' and pre-commit hooks installed."
     silent: true
 
   lock:
     desc: "Generates requirements.lock from pyproject.toml using uv."
-    deps: [setup:env] # Ensure uv is available from the venv
+    deps: [setup: env] # Ensure uv is available from the venv. Added space after colon.
     sources: ["pyproject.toml"]
     generates: ["requirements.lock"]
     cmds:
@@ -130,7 +131,7 @@ tasks:
   # --------------------------------------------------------------------------->
   precommit:install:
     desc: "Installs pre-commit hooks."
-    deps: [setup:deps] # Changed from 'setup' to 'setup:deps'
+    deps: [setup: deps] # Changed from 'setup' to 'setup:deps'. Added space after colon.
     cmds:
       - "{{.PRECOMMIT}} install"
     silent: true
@@ -235,7 +236,7 @@ tasks:
 
   docker:run:
     desc: "Runs the FastAPI web example (examples/web/) in a Docker container from the locally built image."
-    deps: [docker:build]
+    deps: [docker: build] # Added space after colon
     cmds:
       - docker run -p {{.APP_PORT | default 8000}}:8000 {{.IMAGE_NAME_LOCAL | default "your-app-image"}}
     vars:
@@ -315,3 +316,5 @@ tasks:
       - task: setup
       - task: precommit:install
     silent: true
+
+# Temporary comment to force pre-commit to re-evaluate this file
