@@ -2,7 +2,8 @@
 FROM python:3.11-slim AS builder
 
 # Install uv, our super-fast Python package installer
-ENV UV_VERSION=0.1.20 # Pin uv version for reproducibility, update as needed
+# Pin uv version for reproducibility, update as needed
+ENV UV_VERSION=0.1.20
 RUN pip install --no-cache-dir uv==${UV_VERSION}
 
 WORKDIR /opt/build
