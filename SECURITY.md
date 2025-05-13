@@ -24,6 +24,4 @@ In your report, please include:
 - The version(s) of the software affected.
 - Any potential impact you've identified.
 
-We will acknowledge your report within 48 hours and will work with you to understand and address the issue. We aim to provide a fix as quickly as possible.
-
-Thank you for helping to keep this project secure.
+We will acknowledge your report within 48 hours and will work with you to understand and address the issue. We aim to provide a fix as quickly as possible. Thank you for helping to keep this project secure!
