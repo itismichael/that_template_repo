@@ -1,0 +1,302 @@
+version: '3'
+
+vars:
+  PROJECT_DIR: '{{.USER_WORKING_DIR}}'
+  PYTHON_VERSION: "3.11" # Ensure this matches your project's Python version
+  VENV_DIR: .venv
+  PYTHON: "{{.VENV_DIR}}/bin/python"
+  PRECOMMIT: "{{.VENV_DIR}}/bin/pre-commit"
+  COMMITIZEN: "{{.VENV_DIR}}/bin/cz" # For commitizen tool
+  GIT_CZ: "{{.VENV_DIR}}/bin/git-cz" # For git-cz alias often used with commitizen
+  PYTEST: "{{.VENV_DIR}}/bin/pytest"
+  RUFF: "{{.VENV_DIR}}/bin/ruff"
+  BANDIT: "{{.VENV_DIR}}/bin/bandit"
+  MKDOCS: "{{.VENV_DIR}}/bin/mkdocs"
+  IMAGE_NAME_LOCAL: "your-app-image" # Default image name
+  TAG: "latest"                 # Default tag
+  PIP_AUDIT_OUTPUT_FORMAT: '{{default "columns" .PIP_AUDIT_OUTPUT_FORMAT}}'
+  APP_PORT: '{{default "8000" .APP_PORT}}'
+  CLI_ARGS: '{{default "" .CLI_ARGS}}'
+
+tasks:
+  default:
+    desc: "Lists all available tasks."
+    cmds:
+      - task --list
+    silent: true
+
+  # --------------------------------------------------------------------------->
+  # Setup & Installation
+  # --------------------------------------------------------------------------->
+  setup:env:
+    desc: "Creates a virtual environment using uv if it doesn't exist."
+    status:
+      - test -d "{{.VENV_DIR}}"
+    cmds:
+      - "uv venv {{.VENV_DIR}} --python {{.PYTHON_VERSION}}"
+    silent: true
+
+  setup:deps:
+    desc: "Installs project dependencies and dev tools using uv."
+    deps: [setup:env]
+    sources: ["pyproject.toml", "requirements.lock"] # Trigger if pyproject.toml or lock file changes
+    status:
+      - test -f "{{.VENV_DIR}}/.deps_installed" # Check for our marker file
+    cmds:
+      - "uv pip install -e .[dev,docs,test,lint] --python {{.PYTHON}}"
+      - touch "{{.VENV_DIR}}/.deps_installed"         # Create the marker file
+    silent: true
+
+  setup:
+    desc: "Full project setup: creates venv and installs all dependencies."
+    deps: [setup:env, setup:deps]
+    cmds:
+      - echo "Project setup complete. Virtual environment in '{{.VENV_DIR}}'."
+    silent: true
+
+  lock:
+    desc: "Generates requirements.lock from pyproject.toml using uv."
+    deps: [setup:env] # Ensure uv is available from the venv
+    sources: ["pyproject.toml"]
+    generates: ["requirements.lock"]
+    cmds:
+      - "uv pip compile pyproject.toml --all-extras -o requirements.lock --python {{.PYTHON}}"
+    silent: true
+
+  # --------------------------------------------------------------------------->
+  # Linting, Formatting & Security Checks
+  # --------------------------------------------------------------------------->
+  lint:
+    desc: "Runs Ruff linter, Mypy, Bandit, and pip-audit checks."
+    deps: [setup]
+    sources: ["src/**/*.py", "examples/**/*.py", "tests/**/*.py", "pyproject.toml", ".pre-commit-config.yaml", "Taskfile.yml"]
+    cmds:
+      - echo "Running Ruff linter (checking formatting and lint rules)..."
+      - "{{.RUFF}} check src examples tests"
+      - echo "\\nRunning Mypy static type checker..."
+      - "{{.PYTHON}} -m mypy src examples tests"
+      - echo "\\nRunning Bandit security linter..."
+      - "{{.BANDIT}} -r src examples -ll -ii"
+      - echo "\\nRunning pip-audit dependency vulnerability checker..."
+      - "{{.VENV_DIR}}/bin/pip-audit --output {{.PIP_AUDIT_OUTPUT_FORMAT}}"
+    silent: true
+
+  typecheck:
+    desc: "Runs Mypy static type checker."
+    deps: [setup]
+    sources: ["src/**/*.py", "examples/**/*.py", "tests/**/*.py", "pyproject.toml"]
+    cmds:
+      - "{{.PYTHON}} -m mypy src examples tests"
+    silent: true
+
+  format:
+    desc: "Formats code using Ruff (Black-compatible formatter and import sorter)."
+    deps: [setup]
+    sources: ["src/**/*.py", "examples/**/*.py", "tests/**/*.py", "pyproject.toml", ".pre-commit-config.yaml", "Taskfile.yml"]
+    cmds:
+      - echo "Formatting with Ruff (formatter)..."
+      - "{{.RUFF}} format src examples tests"
+      - echo "\\nFormatting with Ruff (import sorter)..."
+      - "{{.RUFF}} check --select I --fix src examples tests"
+    silent: true
+
+  # --------------------------------------------------------------------------->
+  # Testing & Coverage
+  # --------------------------------------------------------------------------->
+  test:
+    desc: "Runs tests with pytest and generates configured coverage reports (term-missing, xml)." # From user's list
+    deps: [setup]
+    sources: ["src/**/*.py", "examples/**/*.py", "tests/**/*.py", "pyproject.toml"]
+    cmds:
+      - "{{.PYTEST}}" # pytest will use pyproject.toml for coverage config (including xml)
+    silent: true
+
+  coverage:
+    desc: "Runs tests, shows terminal coverage, and generates an HTML report."
+    deps: [setup]
+    sources: ["src/**/*.py", "examples/**/*.py", "tests/**/*.py", "pyproject.toml"]
+    cmds:
+      - "{{.PYTEST}}" # Run tests which should also generate .coverage
+      - echo "\\nGenerating HTML coverage report in 'htmlcov/'..."
+      - "{{.PYTHON}} -m coverage html" # Generate HTML from .coverage
+      - echo "HTML report generated. Open 'htmlcov/index.html' in your browser."
+    silent: true
+
+  # --------------------------------------------------------------------------->
+  # Pre-commit Hooks
+  # --------------------------------------------------------------------------->
+  precommit:install:
+    desc: "Installs pre-commit hooks."
+    deps: [setup]
+    cmds:
+      - "{{.PRECOMMIT}} install"
+    silent: true
+
+  precommit:run:
+    desc: "Runs all pre-commit hooks on all files."
+    deps: [setup]
+    cmds:
+      - "{{.PRECOMMIT}} run --all-files"
+    silent: true
+
+  precommit:update:
+    desc: "Updates pre-commit hooks to their latest versions defined in .pre-commit-config.yaml."
+    deps: [setup]
+    cmds:
+      - "{{.PRECOMMIT}} autoupdate"
+    silent: true
+
+  # --------------------------------------------------------------------------->
+  # Commitizen (Conventional Commits)
+  # --------------------------------------------------------------------------->
+  cz:
+    desc: "Alias for 'task cz:commit'. Interactively create a commit message."
+    cmds:
+      - task: cz:commit
+    silent: true
+
+  cz:commit:
+    desc: "Interactively create a commit message with Commitizen."
+    deps: [setup]
+    cmds:
+      - "{{.GIT_CZ}}"
+    silent: true
+
+  cz:check:
+    desc: "Check if a commit message (e.g., from .git/COMMIT_EDITMSG) follows Conventional Commits."
+    deps: [setup]
+    cmds:
+      - "{{.COMMITIZEN}} check --commit-msg-file .git/COMMIT_EDITMSG"
+    silent: true
+
+  cz:bump:
+    desc: "Bump version and create tag using Commitizen (dry run by default). Use 'task cz:bump -- --no-dry-run' to apply."
+    deps: [setup]
+    cmds:
+      - "{{.COMMITIZEN}} bump --dry-run {{.CLI_ARGS}}"
+    vars:
+      CLI_ARGS: "{{default \"\" .CLI_ARGS}}"
+
+  cz:changelog:
+    desc: "Generate a changelog from conventional commits (dry run by default). Use 'task cz:changelog -- --no-dry-run' to apply."
+    deps: [setup]
+    cmds:
+      - "{{.COMMITIZEN}} changelog --dry-run {{.CLI_ARGS}}"
+    vars:
+      CLI_ARGS: "{{default \"\" .CLI_ARGS}}"
+
+  # --------------------------------------------------------------------------->
+  # Running Examples
+  # --------------------------------------------------------------------------->
+  serve:web:
+    desc: "Run the FastAPI example web server with uvicorn (hot-reloading)."
+    deps: [setup]
+    cmds:
+      - "{{.VENV_DIR}}/bin/uvicorn examples.web.main:app --reload --host 0.0.0.0 --port {{.APP_PORT | default 8000}}"
+    vars:
+      APP_PORT: "{{.APP_PORT}}"
+
+  run:cli:
+    desc: "Run the Typer CLI example. Pass options after '--', e.g., task run:cli -- --name Cascade"
+    cmds:
+      - '{{.VENV_DIR}}/bin/python examples/cli.py {{.CLI_ARGS}}'
+    vars:
+      CLI_ARGS: "{{default \"\" .CLI_ARGS}}"
+
+  run:pipeline:
+    desc: "Run the example data pipeline script."
+    cmds:
+      - '{{.VENV_DIR}}/bin/python examples/data_pipeline.py'
+
+  # --------------------------------------------------------------------------->
+  # Docker & Docker Compose
+  # --------------------------------------------------------------------------->
+  docker:build:
+    desc: "Builds the Docker image for the FastAPI web example (examples/web/) using the root Dockerfile."
+    cmds:
+      - docker build -t {{.IMAGE_NAME_LOCAL | default "your-app-image"}} .
+    vars:
+      IMAGE_NAME_LOCAL: "{{.IMAGE_NAME_LOCAL}}"
+
+  docker:run:
+    desc: "Runs the FastAPI web example (examples/web/) in a Docker container from the locally built image."
+    deps: [docker:build]
+    cmds:
+      - docker run -p {{.APP_PORT | default 8000}}:8000 {{.IMAGE_NAME_LOCAL | default "your-app-image"}}
+    vars:
+      APP_PORT: "{{.APP_PORT}}"
+      IMAGE_NAME_LOCAL: "{{.IMAGE_NAME_LOCAL}}"
+
+  # --------------------------------------------------------------------------->
+  # Documentation (MkDocs)
+  # --------------------------------------------------------------------------->
+  docs:serve:
+    desc: "Serves the documentation locally with MkDocs (hot-reloading)."
+    deps: [setup]
+    cmds:
+      - "{{.MKDOCS}} serve -a localhost:8001" # Specify address to avoid port conflicts
+    silent: true
+
+  docs:build:
+    desc: "Builds the static documentation site using MkDocs."
+    deps: [setup]
+    cmds:
+      - "{{.MKDOCS}} build"
+    silent: true
+
+  # --------------------------------------------------------------------------->
+  # Cleaning
+  # --------------------------------------------------------------------------->
+  clean:pycache:
+    desc: "Removes Python __pycache__ directories and .pyc files."
+    cmds:
+      - find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
+    silent: true
+
+  clean:pytest:
+    desc: "Removes pytest cache (.pytest_cache) and coverage files (.coverage, coverage.xml, htmlcov)."
+    cmds:
+      - rm -rf .pytest_cache .coverage coverage.xml htmlcov
+    silent: true
+
+  clean:build:
+    desc: "Removes build artifacts (build, dist, *.egg-info)."
+    cmds:
+      - rm -rf build dist *.egg-info src/*.egg-info
+    silent: true
+
+  clean:venv:
+    desc: "Removes the virtual environment directory ({{.VENV_DIR}})."
+    cmds:
+      - |-
+        echo Attempting to remove virtual environment at: {{.VENV_DIR}}
+      - |-
+        rm -rf "{{.VENV_DIR}}"
+    silent: true
+
+  clean:mkdocs:
+    desc: "Removes MkDocs build artifacts (site directory)."
+    cmds:
+      - rm -rf site/
+    silent: true
+
+  clean:
+    desc: "Runs all clean tasks to remove temporary files and artifacts."
+    cmds:
+      - task: clean:pycache
+      - task: clean:pytest
+      - task: clean:build
+      - task: clean:mkdocs
+      # Note: clean:venv is intentionally excluded from the main clean task
+      # as it's more destructive. Run 'task clean:venv' explicitly if needed.
+    silent: true
+
+  # --------------------------------------------------------------------------->
+  # Utility / Alias Tasks
+  # --------------------------------------------------------------------------->
+  init:
+    desc: "Alias for 'task setup' and 'task precommit:install'. Initializes the project for development."
+    cmds:
+      - task: setup
+      - task: precommit:install
+    silent: true

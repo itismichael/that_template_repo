@@ -1,0 +1,11 @@
+# This file designates default owners for parts of the codebase.
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Global default owners. These users will be requested for review for all PRs.
+# * @your-github-username
+
+# Specific paths and their owners (examples)
+# /app/                       @app-team-lead @another-app-developer
+# /src/your_core_library/   @core-library-maintainer
+# /docs/                      @docs-writer
+# .github/workflows/          @ci-cd-expert

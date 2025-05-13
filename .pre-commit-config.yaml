@@ -1,0 +1,43 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+
+# To use: 
+# 1. Ensure pre-commit is installed: `uv pip install pre-commit` (or `pip install pre-commit`)
+# 2. Install hooks: `pre-commit install` (or `task precommit:install` after `task setup`)
+
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0 # Use the latest version
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-json
+    -   id: check-toml
+    -   id: check-added-large-files
+    -   id: detect-private-key
+
+# Ruff for linting and formatting
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    # Find the latest version that corresponds to the ruff version in pyproject.toml
+    rev: v0.4.4 # Corresponds to ruff >=0.4.0
+    hooks:
+      - id: ruff
+        name: ruff (lint + autofix)
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+        name: ruff (formatter)
+
+# Commit Message Linting (Conventional Commits)
+-   repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.27.0 # Use a recent stable version (align with pyproject.toml if strict pinning there)
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: 'v1.10.0'  # Pin the version of mypy
+    hooks:
+    -   id: mypy
+        args: [--strict]
+        additional_dependencies: [pydantic] # Add types for libraries like pydantic

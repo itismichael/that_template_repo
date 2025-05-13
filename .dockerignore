@@ -1,0 +1,53 @@
+# Git stuff
+.git
+.gitignore
+
+# Python stuff
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Environments
+.env
+.env.*
+!.env.example # Do not ignore .env.example, it should be committed
+.venv
+venv/
+ENV/
+env/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Test & Coverage artifacts
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# IDE & OS specific
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+
+# Other
+README.md # Often not needed in the final image
+CONTRIBUTING.md
+CHANGELOG.md
+LICENSE.md
+SECURITY.md
+CODE_OF_CONDUCT.md
+Taskfile.yml
+*.db # If you have local sqlite databases for testing
+*.log
+
+# Don't ignore the actual app and src code!
+# If you have specific data files for tests that shouldn't be in the image:
+# tests/fixtures/

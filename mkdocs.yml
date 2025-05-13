@@ -1,0 +1,61 @@
+# mkdocs.yml
+site_name: "{{PROJECT_NAME}} Documentation" # TODO: Replace
+site_url: "https://{{GITHUB_USERNAME}}.github.io/{{PROJECT_SLUG}}/" # TODO: Replace
+repo_url: "https://github.com/{{GITHUB_USERNAME}}/{{PROJECT_SLUG}}" # TODO: Replace
+repo_name: "{{GITHUB_USERNAME}}/{{PROJECT_SLUG}}" # TODO: Replace
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+  language: en
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+plugins:
+  - search
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_style: tango
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - admonition
+  - toc:
+      permalink: true
+
+# Page tree
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Configuration: configuration.md
+  - Usage: usage.md
+  - Guides:
+    - Container Registries: guides/container_registry.md
+    - Security & Secrets: guides/security_and_secrets.md
+    - Manual Setup: guides/manual_setup.md
+  - Setup & Philosophy:
+    - AI-Assisted Setup: ai_assisted_setup.md
+    - Design Philosophy & FAQ: design_philosophy.md

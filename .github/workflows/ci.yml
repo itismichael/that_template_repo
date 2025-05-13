@@ -1,0 +1,102 @@
+name: Python CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: # Allows manual triggering
+
+permissions:
+  contents: read
+
+jobs:
+  lint-test-build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"] # Test against multiple Python versions
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install uv (Python package manager)
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+      # Or use pip to install uv if preferred:
+      # pip install uv
+
+    - name: Install dependencies using uv
+      run: |
+        uv venv .venv --python ${{ matrix.python-version }}
+        source .venv/bin/activate
+        uv pip install -e .[dev,test,lint]
+        uv pip install ruff
+
+    - name: Set VENV_PATH environment variable
+      run: |
+        echo "VENV_PATH=$(pwd)/.venv" >> "$GITHUB_ENV"
+
+    - name: Lint with Ruff
+      run: |
+        source .venv/bin/activate
+        ruff check src examples tests
+        ruff format --check src examples tests
+
+    - name: Security scan (Bandit)
+      run: |
+        source .venv/bin/activate
+        bandit -r src examples -c pyproject.toml
+
+    - name: Dependency Vulnerability Scan (pip-audit)
+      run: |
+        source .venv/bin/activate
+        pip-audit # Default command checks the active environment
+
+    - name: Test with pytest and Generate Coverage Reports
+      run: |
+        source .venv/bin/activate
+        # Generate terminal (missing lines) and XML reports (for potential processing)
+        pytest --cov=src --cov=examples --cov-report=term-missing --cov-report=xml
+        # Separately generate the HTML report for artifact upload
+        pytest --cov=src --cov=examples --cov-report=html
+
+    - name: Upload HTML Coverage Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-coverage-report-${{ matrix.python-version }}
+        path: htmlcov/
+
+    - name: Build Documentation
+      run: |
+        source .venv/bin/activate
+        python -m uv pip install -e .[docs] # Ensure docs dependencies are installed
+        mkdocs build --clean --strict
+
+    # Optional: Deploy to GitHub Pages (uncomment and configure after setting up GitHub Pages for your repo)
+    # - name: Deploy Documentation to GitHub Pages
+    #   if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Only deploy from main branch
+    #   uses: peaceiris/actions-gh-pages@v3
+    #   with:
+    #     github_token: ${{ secrets.GITHUB_TOKEN }}
+    #     publish_dir: ./site
+    #     # cname: your.custom.domain.com # Optional: if you have a custom domain
+
+    - name: Build Docker image (optional, can be a separate job)
+      if: matrix.python-version == '3.11' # Only build Docker on one Python version to save time
+      run: |
+        echo "Building Docker image (this is a dry-run in CI for now)..."
+        docker build -t your-image-name:${{ github.sha }} .
+        # In a real CI/CD for deployment, you would push this to a registry:
+        # echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        # docker tag your-image-name:${{ github.sha }} ghcr.io/${{ github.repository_owner }}/your-image-name:${{ github.sha }}
+        # docker push ghcr.io/${{ github.repository_owner }}/your-image-name:${{ github.sha }}
+        # Or use gcloud to build and push to Google Artifact Registry / GCR for Cloud Run
+        # gcloud builds submit --tag gcr.io/YOUR_GCP_PROJECT/YOUR_IMAGE_NAME:${{ github.sha }} .
