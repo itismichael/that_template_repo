@@ -56,6 +56,7 @@ nav:
     - Container Registries: guides/container_registry.md
     - Security & Secrets: guides/security_and_secrets.md
     - Manual Setup: guides/manual_setup.md
+    - Releasing & Versioning: guides/releasing_and_versioning.md
   - Setup & Philosophy:
     - AI-Assisted Setup: ai_assisted_setup.md
     - Design Philosophy & FAQ: design_philosophy.md
