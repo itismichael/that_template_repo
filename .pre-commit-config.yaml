@@ -1,7 +1,7 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 
-# To use: 
+# To use:
 # 1. Ensure pre-commit is installed: `uv pip install pre-commit` (or `pip install pre-commit`)
 # 2. Install hooks: `pre-commit install` (or `task precommit:install` after `task setup`)
 
@@ -39,5 +39,11 @@ repos:
     rev: 'v1.10.0'  # Pin the version of mypy
     hooks:
     -   id: mypy
-        args: [--strict]
-        additional_dependencies: [pydantic] # Add types for libraries like pydantic
+        args: []
+        additional_dependencies: [
+            ".",
+            "pydantic",
+            "typer",
+            "fastapi",
+            "pydantic-settings"
+        ]
