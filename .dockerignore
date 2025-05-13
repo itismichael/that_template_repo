@@ -38,10 +38,10 @@ htmlcov/
 Thumbs.db
 
 # Other
-README.md # Often not needed in the final image
+# README.md # Often not needed in the final image - Commented out as it's needed for build
 CONTRIBUTING.md
 CHANGELOG.md
-LICENSE.md
+# LICENSE.md - Commented out as it's needed for build
 SECURITY.md
 CODE_OF_CONDUCT.md
 Taskfile.yml
