@@ -31,7 +31,7 @@ We welcome contributions to [Your Project Name]! Please follow these guidelines 
 - Ensure your changes pass all tests (`task test`).
 - Add new tests for new features or bug fixes.
 - Update documentation if necessary.
-- Commit your changes with a clear and descriptive commit message.
+- Commit your changes with a clear and descriptive commit message. For detailed instructions on the commit process, including how to work with pre-commit hooks and Commitizen, please see the [Releasing and Versioning Guide](./docs/guides/releasing_and_versioning.md).
 
 ## Submitting a Pull Request
 

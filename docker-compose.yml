@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  app-base: 
+  app-base:
     image: "${PROJECT_NAME:-your_core_library}:latest"
     build:
       context: .
@@ -13,11 +13,11 @@ services:
     environment:
       - LOG_LEVEL=${LOG_LEVEL:-info}
 
-  app: 
+  app:
     extends:
       service: app-base
 
-  app-dev: 
+  app-dev:
     extends:
       service: app-base
     profiles:

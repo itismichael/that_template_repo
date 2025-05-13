@@ -12,6 +12,10 @@ repos:
     -   id: trailing-whitespace
     -   id: end-of-file-fixer
     -   id: check-yaml
+        args: [--unsafe] # --unsafe allows some custom tags, but mkdocs uses specific ones.
+        exclude: ^mkdocs\.yml$ # mkdocs.yml is excluded because it uses custom YAML tags
+                             # (e.g., for pymdownx.superfences) that stock check-yaml
+                             # doesn't recognize. MkDocs validates its own config.
     -   id: check-json
     -   id: check-toml
     -   id: check-added-large-files
@@ -39,10 +43,12 @@ repos:
     rev: 'v1.10.0'  # Pin the version of mypy
     hooks:
     -   id: mypy
-        args: []
+        args:
+          - "--explicit-package-bases"
         additional_dependencies: [
             ".",
             "pydantic",
+            "pytest", # Added pytest for type stubs
             "typer",
             "fastapi",
             "pydantic-settings"

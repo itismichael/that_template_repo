@@ -22,7 +22,7 @@ echo # Add a blank line for better readability before the prompt
 printf "Apply these version bump changes? (y/N): "
 # Using 'head -n 1' to read a single line of input for better compatibility across shells
 # Read directly from TTY for interactive tasks when 'task' uses -i or the task is interactive
-read -r confirmation < /dev/tty 
+read -r confirmation < /dev/tty
 echo # Newline after user input for cleaner subsequent output
 
 if [ "$confirmation" = "y" ] || [ "$confirmation" = "Y" ]; then

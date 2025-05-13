@@ -117,6 +117,12 @@ graph TD
 
 {{ ... }}
 
+## Committing, Versioning, and Releasing
+
+This project uses Conventional Commits and Commitizen for standardized commit messages and automated version bumping. Pre-commit hooks are in place to ensure code quality.
+
+For detailed information on the recommended commit workflow, how to handle pre-commit hooks, and the steps for versioning and releasing, please see the **[Releasing and Versioning Guide](./docs/guides/releasing_and_versioning.md)**.
+
 ## Testing
 
 Run all tests:

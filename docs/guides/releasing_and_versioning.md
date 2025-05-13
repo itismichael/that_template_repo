@@ -14,6 +14,47 @@ This project uses a streamlined approach to versioning, tagging, and changelog g
 
 *   **Changelog:** `CHANGELOG.md` is automatically updated by Commitizen during the release process. You should manually curate the notes for the `[Unreleased]` section before making a release.
 
+## Understanding the Commit Workflow: Pre-commit Hooks and Staging
+
+This project uses [pre-commit hooks](https://pre-commit.com/) to automatically check and format your code *before* it's committed. Sometimes, these hooks will modify your files (e.g., to fix formatting). It's crucial to handle this correctly to ensure your commit includes these automated changes and you don't lose your interactively entered commit message from Commitizen.
+
+**Always follow this workflow for every commit:**
+
+1.  **Make your code changes and stage them:**
+    ```bash
+    # ...make your changes...
+    git add <your-changed-files>
+    # or, to stage all changes:
+    git add .
+    ```
+
+2.  **(Recommended) Run pre-commit hooks manually first:**
+    This step is optional but highly recommended, especially if you suspect files might be modified by formatters. It allows you to see and review any automatic modifications *before* attempting to use Commitizen.
+    ```bash
+    task precommit:run
+    ```
+
+3.  **Review and re-stage any modifications made by hooks:**
+    If the previous step (or the commit attempt in step 4) shows that pre-commit hooks modified any files, those files will no longer be fully staged for the commit. You **must** review these automated changes and stage them again:
+    ```bash
+    # See what the hooks changed
+    git diff <files-modified-by-hooks>
+
+    # Stage the changes made by the hooks
+    git add <files-modified-by-hooks>
+    # or, if you're sure all unstaged changes are from hooks and are desired:
+    git add .
+    ```
+
+4.  **Create your commit using Commitizen:**
+    Now that all files are staged and conform to project standards (i.e., pre-commit hooks should make no further changes), use the Commitizen task. This ensures your commit message adheres to the [Conventional Commits](https://www.conventionalcommits.org/) specification.
+    ```bash
+    task cz:commit
+    ```
+    Follow the interactive prompts to describe your changes. If pre-commit hooks pass without further modifications, your commit will be successful.
+
+    *If pre-commit hooks still fail at this stage (i.e., exit with an error after you've re-staged their changes), it means there's an issue that wasn't auto-fixable (e.g., a critical linting error or a security vulnerability). You'll need to address this manually before you can commit.*
+
 ## The Release Workflow
 
 This workflow assumes you are on your main branch (e.g., `main` or `master`) and it's ready for a release.

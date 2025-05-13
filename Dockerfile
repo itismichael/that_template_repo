@@ -51,7 +51,7 @@ COPY examples/web/ ./web_example/
 # Ensure correct ownership for copied files
 # Grouping chown operations
 RUN chown -R app:app /app /usr/local/lib/python3.11/site-packages ./web_example/
-# If /usr/local/bin was copied and needs chown: 
+# If /usr/local/bin was copied and needs chown:
 # RUN chown -R app:app /usr/local/bin
 
 USER app
