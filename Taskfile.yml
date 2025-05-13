@@ -171,7 +171,7 @@ tasks:
     silent: true
 
   cz:bump:
-    desc: "Bump version and create tag using Commitizen (dry run by default). Use 'task cz:bump -- --no-dry-run' to apply."
+    desc: "Bump version and create tag using Commitizen (dry run by default). Use 'task cz:bump -- --no-dry-run' to apply and then run 'task release:push'."
     deps: [setup]
     cmds:
       - "{{.COMMITIZEN}} bump --dry-run {{.CLI_ARGS}}"
@@ -185,6 +185,16 @@ tasks:
       - "{{.COMMITIZEN}} changelog --dry-run {{.CLI_ARGS}}"
     vars:
       CLI_ARGS: "{{default \"\" .CLI_ARGS}}"
+
+  # --------------------------------------------------------------------------->
+  # Release Helper Tasks
+  # --------------------------------------------------------------------------->
+  release:push:
+    desc: "Pushes the current branch and all tags to the default remote (origin). Run after 'cz:bump -- --no-dry-run'."
+    cmds:
+      - git push origin HEAD # Pushes the current branch to origin
+      - git push origin --tags # Pushes all local tags to origin
+    silent: true
 
   # --------------------------------------------------------------------------->
   # Running Examples
