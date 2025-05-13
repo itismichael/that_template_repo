@@ -11,6 +11,8 @@ WORKDIR /opt/build
 # Copy project files necessary for building the wheel and installing runtime deps
 COPY pyproject.toml ./pyproject.toml
 COPY src/ ./src/
+COPY LICENSE.md ./LICENSE.md
+COPY README.md ./README.md
 # If your setup needs other files like README.md for hatchling to build, copy them too.
 # COPY README.md ./README.md
 
