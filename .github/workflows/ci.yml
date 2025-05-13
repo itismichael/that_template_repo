@@ -38,7 +38,6 @@ jobs:
         uv venv .venv --python ${{ matrix.python-version }}
         source .venv/bin/activate
         uv pip install -e .[dev,test,lint]
-        uv pip install ruff
 
     - name: Set VENV_PATH environment variable
       run: |
@@ -77,7 +76,7 @@ jobs:
     - name: Build Documentation
       run: |
         source .venv/bin/activate
-        python -m uv pip install -e .[docs] # Ensure docs dependencies are installed
+        uv pip install -e .[docs] # Ensure docs dependencies are installed
         mkdocs build --clean --strict
 
     # Optional: Deploy to GitHub Pages (uncomment and configure after setting up GitHub Pages for your repo)
