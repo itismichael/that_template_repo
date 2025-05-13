@@ -116,8 +116,8 @@ python_functions = "test_*"
 pythonpath = ["."]  # ADDED: Ensure project root is in sys.path for pytest
 
 [tool.commitizen]
-name = "cz_customize"
-version = "0.3.2" # Must match [project.version]
+name = "cz_conventional_commits"
+version = "0.3.0" # Must match [project.version]
 version_files = [
     "pyproject.toml:^version", # Path to version in pyproject.toml
     # "src/your_core_library/__init__.py:^__version__" # Uncomment if you have version here too
@@ -134,21 +134,20 @@ major_version_zero = true # Allows 0.x.y versions to have breaking changes (0.y.
 message_template = """
 {{change_type}}{% if scope %}({{scope}}){% endif %}{% if is_breaking_change %}!{% endif %}: {{subject}}
 {% if body %}\n\n{{body}}{% endif %}
-{% if is_breaking_change %}\n\nBREAKING CHANGE: {{breaking_change_description}}{% endif %}
+{% if is_breaking_change %}\n\nBREAKING CHANGE: {{breaking_change}}{% endif %}
 {% if issues_closed %}\n\nCloses {{issues_closed}}{% endif %}
 """
 
-bump_map = { "feat" = "MINOR", "fix" = "PATCH", "docs" = "PATCH", "style" = "PATCH", "refactor" = "PATCH", "perf" = "PATCH", "test" = "PATCH", "build" = "PATCH", "ci" = "PATCH", "chore" = "PATCH", "revert" = "PATCH" }
+bump_map = { "feat" = "MINOR", "fix" = "PATCH", "docs" = "PATCH", "style" = "PATCH", "refactor" = "PATCH", "perf" = "PATCH", "test" = "PATCH", "build" = "PATCH", "ci" = "PATCH" }
 
-change_type_map = { "feat" = "Features", "fix" = "Bug Fixes", "perf" = "Performance Improvements", "revert" = "Reverts", "docs" = "Documentation", "style" = "Styles", "refactor" = "Code Refactoring", "test" = "Tests", "build" = "Build System", "ci" = "Continuous Integration", "chore" = "Chores" }
+change_type_map = { "feat" = "Features", "fix" = "Bug Fixes", "perf" = "Performance Improvements", "docs" = "Documentation", "style" = "Styles", "refactor" = "Code Refactoring", "test" = "Tests", "build" = "Build System", "ci" = "Continuous Integration" }
 
 questions = [
-  { type = "list", name = "change_type", message = "Select the type of change you are committing:", choices = [ { value = "feat", name = "feat:     A new feature" }, { value = "fix", name = "fix:      A bug fix" }, { value = "docs", name = "docs:     Documentation only changes" }, { value = "style", name = "style:    Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)" }, { value = "refactor", name = "refactor: A code change that neither fixes a bug nor adds a feature" }, { value = "perf", name = "perf:     A code change that improves performance" }, { value = "test", name = "test:     Adding missing tests or correcting existing tests" }, { value = "build", name = "build:    Changes that affect the build system or external dependencies (example scopes: pip, docker, npm)" }, { value = "ci", name = "ci:       Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)" }, { value = "chore", name = "chore:    Other changes that don't modify src or test files" }, { value = "revert", name = "revert:   Reverts a previous commit" } ] },
-  { type = "input", name = "scope", message = "What is the scope of this change (e.g., component or file name)? (press enter to skip)\n"},
+  { type = "list", name = "change_type", message = "Select the type of change you are committing:", choices = [{ value = "feat", name = "feat:     A new feature" }, { value = "fix", name = "fix:      A bug fix" }, { value = "docs", name = "docs:     Documentation only changes (e.g., README, mkdocs)" }, { value = "style", name = "style:    Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)" }, { value = "refactor", name = "refactor: A code change that neither fixes a bug nor adds a feature" }, { value = "perf", name = "perf:     A code change that improves performance" }, { value = "test", name = "test:     Adding missing tests or correcting existing tests" }, { value = "build", name = "build:    Changes that affect the build system or external dependencies (e.g., pyproject.toml, uv, Dockerfile, Taskfile)" }, { value = "ci", name = "ci:       Changes to our CI configuration files and scripts (e.g., GitHub Actions workflows)" }]},
+  { type = "input", name = "scope", message = "What is the scope of this change (e.g., core-lib, web-example, cli-example, data-pipeline, docs, ci, taskfile, deps)? (press enter to skip)\n"},
   { type = "input", name = "subject", message = "Write a short, imperative tense description of the change (max 72 chars):\n"},
-  { type = "input", name = "body", message = "Provide a longer description of the change: (press enter to skip)\n"},
+  { type = "input", name = "body", message = "Provide a longer description of the change (motivation, context, approach): (press enter to skip)\n"},
   { type = "confirm", name = "is_breaking_change", message = "Are there any breaking changes?", default = false},
-  { type = "input", name = "breaking_change_description", message = "Describe the breaking changes:\n"},
   { type = "input", name = "issues_closed", message = "Issue(s) closed (e.g., #123, #456): (press enter to skip)\n"}
 ]
 
