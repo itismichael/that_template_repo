@@ -157,9 +157,10 @@ tasks:
 
   cz:commit:
     desc: "Interactively create a commit message with Commitizen."
-    deps: [setup]
+    deps: [setup] # Ensures commitizen is installed
+    interactive: true # Attempt to force interactive mode
     cmds:
-      - "{{.GIT_CZ}}"
+      - "{{.COMMITIZEN}} commit"
     silent: true
 
   cz:check:
