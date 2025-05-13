@@ -39,7 +39,10 @@ tasks:
   setup:deps:
     desc: "Installs project dependencies and dev tools using uv."
     deps: [setup:env]
-    sources: ["pyproject.toml", "requirements.lock"] # Trigger if pyproject.toml or lock file changes
+    sources:
+      - "pyproject.toml"
+      - "requirements.lock"
+    # Trigger if pyproject.toml or lock file changes
     status:
       - test -f "{{.VENV_DIR}}/.deps_installed" # Check for our marker file
     cmds:
@@ -48,10 +51,10 @@ tasks:
     silent: true
 
   setup:
-    desc: "Full project setup: creates venv and installs all dependencies."
-    deps: [setup:env, setup:deps]
+    desc: "Full project setup: venv, dependencies, and pre-commit hooks."
+    deps: [setup:env, setup:deps, precommit:install]
     cmds:
-      - echo "Project setup complete. Virtual environment in '{{.VENV_DIR}}'."
+      - echo "Project setup complete. Virtual environment in '{{.VENV_DIR}}' and pre-commit hooks installed."
     silent: true
 
   lock:
@@ -127,7 +130,7 @@ tasks:
   # --------------------------------------------------------------------------->
   precommit:install:
     desc: "Installs pre-commit hooks."
-    deps: [setup]
+    deps: [setup:deps] # Changed from 'setup' to 'setup:deps'
     cmds:
       - "{{.PRECOMMIT}} install"
     silent: true
