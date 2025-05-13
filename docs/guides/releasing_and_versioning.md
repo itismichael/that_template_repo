@@ -111,6 +111,32 @@ When you're ready to publish a new version:
        task release:push
        ```
 
+### Troubleshooting a Failed Version Bump
+
+Sometimes, a version bump might not go as planned (e.g., an incorrect version is tagged, or the process fails midway). If you need to correct a bump:
+
+1.  **Primarily rely on `cz bump` (or `task cz:bump`) for versioning and tagging.** Avoid manual edits to version numbers in `pyproject.toml` or manual `git tag` commands if you intend to use the automated bump process, as this can lead to conflicts.
+2.  **If a bump goes wrong:**
+    *   Reset your local branch to the commit *before* the incorrect bump. You can find the commit hash using `git log`:
+        ```bash
+        git reset --hard <commit_hash_before_bad_bump>
+        ```
+    *   Delete the incorrect local Git tag:
+        ```bash
+        git tag -d <incorrect_tag_name>
+        ```
+    *   If the incorrect tag was pushed to the remote repository, delete it from there as well:
+        ```bash
+        git push --delete origin <incorrect_tag_name>
+        ```
+    *   Make any necessary code corrections or changelog adjustments.
+    *   Commit these changes.
+    *   Run the bump process again:
+        ```bash
+        task cz:bump -- --no-dry-run
+        task release:push
+        ```
+
 And that's it! Your new version is released and tagged.
 
 ## Handling the Very First Release (e.g., `0.1.0`)
