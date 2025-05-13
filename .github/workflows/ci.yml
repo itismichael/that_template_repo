@@ -53,7 +53,7 @@ jobs:
     - name: Security scan (Bandit)
       run: |
         source .venv/bin/activate
-        bandit -r src examples -c pyproject.toml
+        bandit -r src examples -c pyproject.toml -ll -ii --exit-code 1
 
     - name: Dependency Vulnerability Scan (pip-audit)
       run: |
@@ -93,10 +93,10 @@ jobs:
       if: matrix.python-version == '3.11' # Only build Docker on one Python version to save time
       run: |
         echo "Building Docker image (this is a dry-run in CI for now)..."
-        docker build -t your-image-name:${{ github.sha }} .
+        docker build -t ${{ github.event.repository.name }}:${{ github.sha }} .
         # In a real CI/CD for deployment, you would push this to a registry:
         # echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-        # docker tag your-image-name:${{ github.sha }} ghcr.io/${{ github.repository_owner }}/your-image-name:${{ github.sha }}
-        # docker push ghcr.io/${{ github.repository_owner }}/your-image-name:${{ github.sha }}
+        # docker tag ${{ github.event.repository.name }}:${{ github.sha }} ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ github.sha }}
+        # docker push ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ github.sha }}
         # Or use gcloud to build and push to Google Artifact Registry / GCR for Cloud Run
-        # gcloud builds submit --tag gcr.io/YOUR_GCP_PROJECT/YOUR_IMAGE_NAME:${{ github.sha }} .
+        # gcloud builds submit --tag gcr.io/YOUR_GCP_PROJECT/${{ github.event.repository.name }}:${{ github.sha }} .

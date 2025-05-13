@@ -144,3 +144,23 @@ major_version_zero = true # Allows 0.x.y versions to have breaking changes (0.y.
 #   { "value": "chore", "name": "chore:    Other changes that don't modify src or test files" },
 #   { "value": "revert", "name": "revert:   Reverts a previous commit" }
 # ]
+
+[tool.bandit]
+# Exclude paths from scanning (e.g., test directories, virtual environments)
+exclude_dirs = ["tests", ".venv", "venv", "ENV", "env", "build", "dist"]
+
+# Skip specific test IDs if they are known to be false positives for your project
+# Example: skips = ["B101"] # Skip assert_used check if it's not relevant
+skips = []
+
+# Confidence level: LOW, MEDIUM, HIGH (report issues of this level or higher)
+confidence = "MEDIUM" # Default: MEDIUM
+
+# Severity level: LOW, MEDIUM, HIGH (report issues of this level or higher)
+severity = "MEDIUM" # Default: LOW
+
+# You can also specify per-test configurations:
+# [tool.bandit.B101] # Example for assert_used
+# severity = "LOW"
+# confidence = "LOW"
+# message = "Custom message for B101 in this project."
