@@ -18,7 +18,7 @@ COPY src/ ./src/
 # Install hatchling and wheel temporarily for this build step.
 RUN uv pip install --system --no-cache hatchling wheel
 # The wheel will be placed in /opt/build/dist/
-RUN python -m hatchling build --wheel
+RUN python -m hatchling build
 
 # Now, create a clean installation directory for runtime dependencies.
 ENV RUNTIME_DEPS_DIR=/opt/runtime_deps
