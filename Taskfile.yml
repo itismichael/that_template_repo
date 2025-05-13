@@ -171,12 +171,13 @@ tasks:
     silent: true
 
   cz:bump:
-    desc: "Bump version and create tag. Dry run by default ('task cz:bump'). To apply: 'task cz:bump -- --no-dry-run'. Then 'task release:push'."
+    desc: "Bump version and create tag. Dry run by default ('task cz:bump'). To apply: 'task cz:bump -- apply'. Then 'task release:push'."
     deps: [setup]
     cmds:
-      - "{{.COMMITIZEN}} bump {{if .CLI_ARGS}}{{.CLI_ARGS}}{{else}}--dry-run{{end}}"
+      # If .CLI_ARGS is 'apply', run without --dry-run. Otherwise, include --dry-run.
+      - "{{.COMMITIZEN}} bump {{if eq .CLI_ARGS \"apply\"}}{{else}}--dry-run{{end}}"
     vars:
-      # Allows passing extra args like --changelog or --no-dry-run
+      # User passes 'apply' via '-- apply'
       CLI_ARGS: "{{default \"\" .CLI_ARGS}}"
     silent: true
 
