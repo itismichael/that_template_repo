@@ -1,4 +1,5 @@
 import pytest
+
 from your_core_library.data_handler import DataHandler
 from your_core_library.data_handler import ExampleModel
 
@@ -20,9 +21,9 @@ def test_initialization(handler):
 
 def test_simple_processing(handler):
     result = handler.process("test_data")
-    assert (
-        result == "processed_atad_tset"
-    ), "Simple processing should reverse and prefix."
+    assert result == "processed_atad_tset", (
+        "Simple processing should reverse and prefix."
+    )
 
 
 def test_process_empty_data(handler):
@@ -38,15 +39,15 @@ def test_process_error_condition(handler):
 def test_complex_processing_logic(handler):
     # This test was originally for 'another_method'. We'll implement it now.
     assert handler.another_method(0) is True, "another_method(0) should return True."
-    assert (
-        handler.another_method(-5) is False
-    ), "another_method with negative should be False."
-    assert (
-        handler.another_method(5) is False
-    ), "another_method(5) should be False (not > 10)."
-    assert (
-        handler.another_method(15) is True
-    ), "another_method(15) should be True (>10)."
+    assert handler.another_method(-5) is False, (
+        "another_method with negative should be False."
+    )
+    assert handler.another_method(5) is False, (
+        "another_method(5) should be False (not > 10)."
+    )
+    assert handler.another_method(15) is True, (
+        "another_method(15) should be True (>10)."
+    )
     assert handler.another_method(11) is True
 
 
