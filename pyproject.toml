@@ -117,7 +117,7 @@ pythonpath = ["."]  # ADDED: Ensure project root is in sys.path for pytest
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.3.1" # Must match [project.version]
+version = "0.3.2" # Must match [project.version]
 version_files = [
     "pyproject.toml:^version", # Path to version in pyproject.toml
     # "src/your_core_library/__init__.py:^__version__" # Uncomment if you have version here too
