@@ -191,7 +191,7 @@ tasks:
   cz:
     desc: "Alias for 'task cz:commit'. Interactively create a commit message."
     cmds:
-      - task:cz:commit
+      - task: cz:commit
     silent: true
 
   cz:commit:
@@ -343,11 +343,11 @@ tasks:
   clean:
     desc: "Runs all clean tasks to remove temporary files and artifacts."
     cmds:
-      - task:clean:pycache
-      - task:clean:pytest
-      - task:clean:build
-      - task:clean:mkdocs
-      - task:clean:audit
+      - task: clean:pycache
+      - task: clean:pytest
+      - task: clean:build
+      - task: clean:mkdocs
+      - task: clean:audit
       # Note: clean:venv is intentionally excluded from the main clean task
       # as it's more destructive. Run 'task clean:venv' explicitly if needed.
     silent: true
@@ -356,10 +356,7 @@ tasks:
   # Utility / Alias Tasks
   # --------------------------------------------------------------------------->
   init:
-    desc: "Alias for 'task setup' and 'task precommit:install'. Initializes the project for development."
+    desc: "Alias for 'task setup'. Initializes the project for development (includes pre-commit hook installation via setup)."
     cmds:
-      - task:setup
-      - task:precommit:install
+      - task: setup
     silent: true
-
-# Temporary comment to force pre-commit to re-evaluate this file
