@@ -30,7 +30,7 @@ RUN mkdir -p $RUNTIME_DEPS_DIR
 # 'uv pip install .' installs the current project (which includes its wheel if pyproject.toml is set up for it)
 # and its runtime dependencies (specified in [project.dependencies]).
 # It will NOT install optional groups like [dev, test, lint] by default.
-RUN uv pip install --no-cache -- --target $RUNTIME_DEPS_DIR .
+RUN pip install --no-cache-dir --target $RUNTIME_DEPS_DIR .
 
 # Stage 2: Final runtime environment
 FROM python:3.11-slim AS runtime
