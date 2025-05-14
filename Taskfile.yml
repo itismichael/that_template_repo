@@ -29,37 +29,55 @@ tasks:
   # Setup & Installation
   # --------------------------------------------------------------------------->
   setup:env:
-    desc: "Creates a virtual environment using uv if it doesn't exist."
-    status:
-      - test -d "{{.VENV_DIR}}"
+    desc: "Ensures a virtual environment exists using uv if it doesn't exist."
     cmds:
-      - "uv venv {{.VENV_DIR}} --python {{.PYTHON_VERSION}}"
+      - cmd: |
+          if [ ! -f "{{.VENV_DIR}}/pyvenv.cfg" ]; then
+            echo "Virtual environment {{.VENV_DIR}}/pyvenv.cfg not found. Creating/Recreating virtual environment..."
+            uv venv {{.VENV_DIR}} --python {{.PYTHON_VERSION}}
+            touch "{{.VENV_DIR}}/.did_create_env"
+          fi
     silent: true
 
   setup:deps:
-    desc: "Installs project dependencies and dev tools using uv."
+    desc: "Installs project dependencies and dev tools using uv if not already marked as installed."
     deps:
       - setup:env
-    # Ensure this list is correctly parsed
     sources:
       - "pyproject.toml"
       - "requirements.lock"
-    # Trigger if pyproject.toml or lock file changes
-    status:
-      - test -f "{{.VENV_DIR}}/.deps_installed" # Check for our marker file
     cmds:
-      - "uv pip install -e .[dev,docs,test,lint] --python {{.PYTHON}}"
-      - touch "{{.VENV_DIR}}/.deps_installed"         # Create the marker file
+      - cmd: |
+          if [ ! -f "{{.VENV_DIR}}/.deps_installed" ] || [ "pyproject.toml" -nt "{{.VENV_DIR}}/.deps_installed" ] || [ "requirements.lock" -nt "{{.VENV_DIR}}/.deps_installed" ]; then
+            echo "Dependencies marker '{{.VENV_DIR}}/.deps_installed' not found or outdated. Installing/Updating dependencies..."
+            uv pip install -e .[dev,docs,test,lint] --python {{.PYTHON}}
+            touch "{{.VENV_DIR}}/.deps_installed"
+            touch "{{.VENV_DIR}}/.did_install_deps"
+          fi
     silent: true
 
   setup:
     desc: "Full project setup: venv, dependencies, and pre-commit hooks."
-    deps:
-      - setup:env
-      - setup:deps
-      - precommit:install
     cmds:
-      - echo "Project setup complete. Virtual environment in '{{.VENV_DIR}}' and pre-commit hooks installed."
+      - task: setup:env
+      - task: setup:deps
+      - task: precommit:install
+      - cmd: |
+          DID_WORK=false
+          MSG_NO_CHANGES="Virtual environment found in '{{.VENV_DIR}}'. No changes to project setup required."
+          MSG_CHANGES_MADE="Project setup complete. Virtual environment in '{{.VENV_DIR}}' and pre-commit hooks installed."
+
+          if [ -f "{{.VENV_DIR}}/.did_create_env" ] || [ -f "{{.VENV_DIR}}/.did_install_deps" ] || [ -f "{{.VENV_DIR}}/.did_install_hooks" ]; then
+            DID_WORK=true
+          fi
+
+          rm -f "{{.VENV_DIR}}/.did_create_env" "{{.VENV_DIR}}/.did_install_deps" "{{.VENV_DIR}}/.did_install_hooks"
+
+          if [ "$DID_WORK" = true ]; then
+            echo "$MSG_CHANGES_MADE"
+          else
+            echo "$MSG_NO_CHANGES"
+          fi
     silent: true
 
   lock:
@@ -78,16 +96,19 @@ tasks:
   lint:
     desc: "Runs Ruff linter, Mypy, Bandit, and pip-audit checks."
     deps: [setup]
+    method: checksum # More robust change detection for sources
     sources: ["src/**/*.py", "examples/**/*.py", "tests/**/*.py", "pyproject.toml", ".pre-commit-config.yaml", "Taskfile.yml"]
     cmds:
-      - echo "Running Ruff linter (checking formatting and lint rules)..."
-      - "{{.RUFF}} check src examples tests"
-      - echo "\\nRunning Mypy static type checker..."
-      - "{{.PYTHON}} -m mypy src examples tests"
-      - echo "\\nRunning Bandit security linter..."
-      - "{{.BANDIT}} -r src examples -ll -ii"
-      - echo "\\nRunning pip-audit dependency vulnerability checker..."
-      - "{{.VENV_DIR}}/bin/pip-audit --output {{.PIP_AUDIT_OUTPUT_FORMAT}}"
+      - cmd: echo "== LINT TASK STARTED =="
+      - cmd: echo "Step 1/4 - Running Ruff linter (checking formatting and lint rules)..."
+      - cmd: "{{.RUFF}} check --fix src examples tests"
+      - cmd: echo "Step 2/4 - Running Mypy static type checker..."
+      - cmd: "{{.PYTHON}} -m mypy src examples tests"
+      - cmd: echo "Step 3/4 - Running Bandit security linter..."
+      - cmd: "{{.BANDIT}} -r src examples -ll -ii"
+      - cmd: echo "Step 4/4 - Running pip-audit dependency vulnerability checker..."
+      - cmd: "{{.VENV_DIR}}/bin/pip-audit --output {{.PIP_AUDIT_OUTPUT_FORMAT}}"
+      - cmd: echo "== LINT TASK COMPLETED SUCCESSFULLY (all checks passed) =="
     silent: true
 
   typecheck:
@@ -135,11 +156,19 @@ tasks:
   # Pre-commit Hooks
   # --------------------------------------------------------------------------->
   precommit:install:
-    desc: "Installs pre-commit hooks."
+    desc: "Installs pre-commit hooks, or confirms if already installed."
     deps:
-      - setup:deps
+      - setup:deps # Ensures dependencies (including pre-commit) are installed first
     cmds:
-      - "{{.PRECOMMIT}} install"
+      - cmd: |
+          if [ -f .git/hooks/pre-commit ]; then
+            echo "Pre-commit hooks already installed."
+          else
+            echo "Installing pre-commit hooks..."
+            {{.PRECOMMIT}} install
+            echo "Pre-commit hooks installed successfully."
+            touch "{{.VENV_DIR}}/.did_install_hooks"
+          fi
     silent: true
 
   precommit:run:
@@ -237,7 +266,6 @@ tasks:
     desc: "Builds the Docker image for the FastAPI web example (examples/web/) using the root Dockerfile."
     deps:
       - setup:env
-    # sources includes Dockerfile and application code for cache invalidation
     cmds:
       - docker build -t {{.IMAGE_NAME_LOCAL | default "your-app-image"}} .
     vars:

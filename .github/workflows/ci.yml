@@ -54,10 +54,26 @@ jobs:
         source .venv/bin/activate
         bandit -r src examples -c pyproject.toml -ll -ii
 
+    - name: Type check with Mypy
+      run: |
+        source .venv/bin/activate
+        mypy src examples tests
+
+    - name: Run pre-commit hooks
+      run: |
+        source .venv/bin/activate
+        pre-commit run --all-files --show-diff-on-failure
+
     - name: Dependency Vulnerability Scan (pip-audit)
       run: |
         source .venv/bin/activate
-        pip-audit # Default command checks the active environment
+        pip-audit --output columns > columns
+
+    - name: Upload pip-audit report (columns)
+      uses: actions/upload-artifact@v4
+      with:
+        name: pip-audit-columns-report-${{ matrix.python-version }}
+        path: columns
 
     - name: Test with pytest and Generate Coverage Reports
       run: |
