@@ -119,7 +119,8 @@ pythonpath = ["."]  # ADDED: Ensure project root is in sys.path for pytest
 name = "cz_conventional_commits"
 version = "0.3.2" # Must match [project.version]
 version_files = [
-    "pyproject.toml:^version", # Path to version in pyproject.toml
+    "pyproject.toml:project.version",      # For [project] version = "x.y.z"
+    "pyproject.toml:tool.commitizen.version" # For [tool.commitizen] version = "x.y.z"
     # "src/your_core_library/__init__.py:^__version__" # Uncomment if you have version here too
 ]
 tag_format = "$version"
@@ -157,7 +158,6 @@ exclude_dirs = ["tests", ".venv", "venv", "ENV", "env", "build", "dist"]
 
 # Skip specific test IDs if they are known to be false positives for your project
 # Example: skips = ["B101"] # Skip assert_used check if it's not relevant
-skips = ["B101"] # Example: Skip assert_used, if applicable
 # You can also specify severity and confidence levels here if needed for Bandit's CLI
 
 [tool.mypy]
