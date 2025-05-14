@@ -145,6 +145,9 @@ To view a detailed HTML report of test coverage:
 This report provides an interactive way to see which lines of code are covered by tests and which are not.
 
 ## Linting and Formatting
+
+> **Note:** Any files named `columns` or `pip-audit-report.*` may be generated as artifacts when running pip-audit. These files are automatically ignored by git and can be safely deleted. You can also run `task clean` to remove them.
+
 {{ ... }}
 
 ## Contributing

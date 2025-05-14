@@ -120,3 +120,7 @@ Desktop.ini
 
 # go-task cache directory
 .task/
+
+# pip-audit artifacts
+columns
+pip-audit-report.*

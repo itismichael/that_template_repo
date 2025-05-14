@@ -306,6 +306,12 @@ tasks:
       - rm -rf site/
     silent: true
 
+  clean:audit:
+    desc: "Removes pip-audit report artifacts (columns, pip-audit-report.*)."
+    cmds:
+      - rm -f columns pip-audit-report.*
+    silent: true
+
   clean:
     desc: "Runs all clean tasks to remove temporary files and artifacts."
     cmds:
@@ -313,6 +319,7 @@ tasks:
       - task:clean:pytest
       - task:clean:build
       - task:clean:mkdocs
+      - task:clean:audit
       # Note: clean:venv is intentionally excluded from the main clean task
       # as it's more destructive. Run 'task clean:venv' explicitly if needed.
     silent: true
