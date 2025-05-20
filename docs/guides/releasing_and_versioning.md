@@ -35,9 +35,9 @@ This project uses [pre-commit hooks](https://pre-commit.com/) to automatically c
     ```
 
 3.  **Review and re-stage any modifications made by hooks:**
-    If the previous step (or the commit attempt in step 4) shows that pre-commit hooks modified any files, those files will no longer be fully staged for the commit. You **must** review these automated changes and stage them again:
+    If the previous step (or the commit attempt in step 4) shows that pre-commit hooks modified any files, those files will be in a modified state but potentially no longer fully staged for the commit (because they were changed after your last `git add`). You **must** review these automated changes and stage them again:
     ```bash
-    # See what the hooks changed
+    # See what the hooks changed (optional, but good practice)
     git diff <files-modified-by-hooks>
 
     # Stage the changes made by the hooks
@@ -79,10 +79,10 @@ When you're ready to publish a new version:
 
    b.  **Curate `[Unreleased]` Changelog Section (Important!):**
        Open `CHANGELOG.md`. Review the `## [Unreleased]` section. Add, edit, or remove entries to ensure they are clear, user-friendly release notes for the upcoming version. These notes will be automatically moved under the new version heading by Commitizen.
-       Commit these changes to `CHANGELOG.md`:
+       Commit these changes to `CHANGELOG.md` using the Commitizen task:
        ```bash
        git add CHANGELOG.md
-       cz commit # Use type 'docs', scope 'changelog', e.g., "docs(changelog): Prepare release notes for vX.Y.Z"
+       task cz:commit # Use type 'docs', scope 'changelog', e.g., "docs(changelog): Prepare release notes for vX.Y.Z"
        git push
        ```
 
@@ -106,10 +106,11 @@ When you're ready to publish a new version:
        *(Note the `--` which is required by `go-task` to pass flags to the underlying command.)*
 
    e.  **Push Changes and Tag to Remote:**
-       Push the bump commit (created in the previous step) and the new tag to your remote repository (e.g., GitHub):
+       Push the bump commit (created in the previous step) and the new tag (and any other tags) to your remote repository (e.g., GitHub):
        ```bash
        task release:push
        ```
+       This task typically pushes the current branch and all tags (`git push origin <branch_name> --tags`).
 
 ### Troubleshooting a Failed Version Bump
 
@@ -125,12 +126,11 @@ Sometimes, a version bump might not go as planned (e.g., an incorrect version is
         ```bash
         git tag -d <incorrect_tag_name>
         ```
-    *   If the incorrect tag was pushed to the remote repository, delete it from there as well:
-        ```bash
-        git push --delete origin <incorrect_tag_name>
-        ```
+    *   If the incorrect tag or bump commit was pushed to the remote repository:
+        *   Delete the remote tag: `git push --delete origin <incorrect_tag_name>`
+        *   If the erroneous bump commit was pushed, you'll need to ensure your local branch is correct, then push it, potentially with force (`git push --force origin <branch_name>`). **Caution:** Force-pushing can be disruptive if others have pulled the incorrect commit. Communicate with your team if this is a shared branch.
     *   Make any necessary code corrections or changelog adjustments.
-    *   Commit these changes.
+    *   Commit these changes using `task cz:commit`.
     *   Run the bump process again:
         ```bash
         task cz:bump -- --no-dry-run
@@ -143,9 +143,9 @@ And that's it! Your new version is released and tagged.
 
 For the *very first release* of your project (e.g., `0.1.0` after initializing from this template), the process is slightly more manual because there are no previous tags for Commitizen to compare against:
 
-1.  **Initial Commits:** Make your initial project setup commits (these should also be conventional commits).
-2.  **Finalize `CHANGELOG.md`:** Manually edit `CHANGELOG.md`. Move all relevant changes from the `[Unreleased]` section to a new `[0.1.0] - YYYY-MM-DD` section. Commit this changelog update (`docs(changelog): Finalize changelog for v0.1.0`).
-3.  **Manually Tag:** Tag this commit:
+1.  **Initial Commits:** Make your initial project setup commits (these should also be conventional commits, e.g., using `task cz:commit`).
+2.  **Finalize `CHANGELOG.md`:** Manually edit `CHANGELOG.md`. Move all relevant changes from the `[Unreleased]` section to a new `## [0.1.0] - YYYY-MM-DD` section. Commit this changelog update using `task cz:commit` (e.g., `docs(changelog): Finalize changelog for v0.1.0`).
+3.  **Manually Tag:** Tag the commit that includes the finalized changelog and version-ready code:
     ```bash
     git tag 0.1.0
     ```

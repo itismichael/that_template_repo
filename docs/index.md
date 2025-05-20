@@ -1,4 +1,4 @@
-# Welcome to the documentation for **My Project**!
+# Welcome to the documentation for **Catalyst Kit**!
 
 This project is a template designed to get you up and running quickly with a versatile Python application. It includes a customizable core library and showcases examples for a FastAPI web service, a Typer CLI, and a data pipeline script.
 
@@ -60,12 +60,12 @@ graph TD
 
 Link to installation, configuration, or quick start guides.
 
-- See [Installation](./installation.md) (You'll need to create this file)
-- Check out the [Usage Guide](./usage.md) (You'll need to create this file)
+- See [Installation](./installation.md)
+- Check out the [Usage Guide](./usage.md)
 
 ## Core Library
 
-Details about `your_core_library`.
+Details about the project's core library.
 
 ## Example Applications
 
@@ -79,8 +79,8 @@ These examples utilize the core library and can be customized or removed as need
 ## Next Steps
 
 - Explore the **Guides** section for detailed information on specific topics like container registries or security.
-- Check out the main project [README.md](https://github.com/{{YOUR_GITHUB_USERNAME}}/{{YOUR_PROJECT_NAME}}) on GitHub for overall project setup and usage.
+- Check out the [main project README.md](../../README.md) on GitHub for overall project setup and usage.
 
 ## Contributing
 
-If you'd like to contribute, please see the [Contributing Guidelines](https://github.com/{{GITHUB_USERNAME}}/{{PROJECT_SLUG}}/blob/main/CONTRIBUTING.md).
+If you'd like to contribute, please see the [Contributing Guidelines](../../CONTRIBUTING.md).

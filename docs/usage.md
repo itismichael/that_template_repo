@@ -4,7 +4,7 @@ This guide helps you quickly get started with and test the basic functionality o
 
 ## Prerequisites
 
-*   The project should be initialized as per the `README.md` or [AI-Assisted Setup Guide](./ai_assisted_setup.md).
+*   The project should be initialized as per the [Installation Guide](./installation.md) or the setup guides in the `docs/guides/` directory.
 *   You have run `task setup` to create the virtual environment and install dependencies.
 *   The virtual environment is activated (`source .venv/bin/activate`).
 
@@ -40,12 +40,12 @@ curl http://127.0.0.1:8000/
 
 ```json
 {
-  "message": "Welcome to your_core_library's FastAPI application!",
-  "greeting": "Hello from {{YOUR_PROJECT_NAME}}!"
+  "message": "Welcome to the core library's FastAPI application!",
+  "greeting": "Hello from [Your Project Name]!"
 }
 ```
 
-*   **Note:** `your_core_library` and `{{YOUR_PROJECT_NAME}}` are placeholders. These values will change after you customize the template.
+*   **Note:** `[Your Project Name]` and the specifics of the core library's involvement will reflect your project's actual configuration after template customization.
 
 #### Health Check Endpoint (`/health`)
 
@@ -78,11 +78,11 @@ curl -X POST http://127.0.0.1:8000/process/ \
 ```json
 {
   "input_data": "sample input string",
-  "processed_data": "Processed by your_core_library.CoreProcessor: SAMPLE INPUT STRING"
+  "processed_data": "Processed by the core library's processor: SAMPLE INPUT STRING"
 }
 ```
 
-*   **Note:** `your_core_library` is a placeholder and will change after customization.
+*   **Note:** The specific processor name and core library details will reflect your project's actual configuration.
 
 **Accessing API Documentation (Swagger & ReDoc):**
 
@@ -109,9 +109,9 @@ task run:cli -- --help
 
 ```
 Hello Cascade
-Processed by your_core_library.CoreProcessor: CASCADE
+Processed by the core library's processor: CASCADE
 ```
-*   **Note:** `your_core_library` is a placeholder and will change after customization.
+*   **Note:** The specific processor name and core library details will reflect your project's actual configuration.
 
 ### 3. Data Pipeline Script (`examples/data_pipeline.py`)
 
@@ -126,14 +126,14 @@ task run:pipeline
 **Expected Output (will vary slightly due to random data, but structure is key):**
 
 ```
-INFO:your_core_library.logging_config:ETL process started.
-INFO:your_core_library.logging_config:Extracting data...
-INFO:your_core_library.logging_config:Transforming data...
-INFO:your_core_library.logging_config:Loading data...
-INFO:your_core_library.logging_config:Transformed data loaded: [{'id': 1, 'name': 'Product A', 'price': 10.0, 'processed_name': 'PRODUCT A'}, ...]
-INFO:your_core_library.logging_config:ETL process completed.
+INFO:core_library.logging:ETL process started.
+INFO:core_library.logging:Extracting data...
+INFO:core_library.logging:Transforming data...
+INFO:core_library.logging:Loading data...
+INFO:core_library.logging:Transformed data loaded: [{'id': 1, 'name': 'Product A', 'price': 10.0, 'processed_name': 'PRODUCT A'}, ...]
+INFO:core_library.logging:ETL process completed.
 ```
-*   **Note:** `your_core_library` in the log messages is a placeholder and will change after customization. The exact data will also vary as it's simulated.
+*   **Note:** The logger name (`core_library.logging`) is a generic example and will reflect your project's actual logging configuration. The exact data will also vary as it's simulated.
 
 ## Dockerizing the FastAPI Web Example
 
@@ -144,7 +144,7 @@ This template includes a `Dockerfile` configured for the FastAPI web example (`e
 ```bash
 task docker:build
 ```
-This creates an image named `your-app-image:latest` by default (or as configured by `IMAGE_NAME_LOCAL` in `Taskfile.yml` or `.env`).
+This creates an image named `your-project-image:latest` by default (or as configured by `IMAGE_NAME_LOCAL` in `Taskfile.yml` or `.env`).
 
 **To run the Docker container:**
 
@@ -159,8 +159,8 @@ For pushing to a container registry, please see the [Container Registry Guide](.
 
 After verifying these basic examples, you can start building out your application's specific features. Remember to:
 
-*   Define your core logic, data models, and utility functions in `src/your_core_library/` (or your renamed library).
-*   If building a web API, add new API endpoints and routers in `examples/web/routers/` (or your chosen app structure).
+*   Define your core logic, data models, and utility functions in your project's core source directory (e.g., `src/core_module/` if you named your main module `core_module`).
+*   If building a web API, add new API endpoints and routers in `examples/web/app/routers/` (or your chosen app structure).
 *   If building a CLI, expand `examples/cli.py` with more commands and options.
 *   If building data pipelines, enhance `examples/data_pipeline.py` or create new pipeline scripts.
 *   Write tests for your new functionality in the `tests/` directory, ensuring good coverage.

@@ -11,26 +11,28 @@ This guide provides detailed manual steps for initializing a new project from th
         name = "your-new-distribution-name" # e.g., my-awesome-package
         # ... other settings
         ```
-    *   **Core Library (Python Package) Name:** This template includes a core library in `src/your_core_library/`. If you change the `name` in `pyproject.toml` to something other than `your_core_library` (or simply wish to rename the default core library), you should also:
-        1.  Rename the directory `src/your_core_library/` to `src/your_new_python_package_name/` (e.g., `src/my_awesome_lib/`).
-        2.  Update all import statements throughout the project. Key areas include: `examples/web/main.py`, `examples/cli.py`, `examples/data_pipeline.py`, and their corresponding tests in `tests/examples/`. For example, change `from your_core_library.data_handler import ...` to `from your_new_python_package_name.data_handler import ...`.
-        3.  Crucially, update the `packages` path in `pyproject.toml` under `[tool.hatch.build.targets.wheel]` to point to your new package directory. For example, if you renamed `src/your_core_library` to `src/my_new_lib`, it should look like:
-            ```toml
-            [tool.hatch.build.targets.wheel]
-            packages = ["src/my_new_lib"]
-            ```
-            The default is `packages = ["src/your_core_library"]`.
-        *   **Tip:** Use your IDE's "Find and Replace in Files" feature to update import statements across the codebase. Look for `from your_core_library` and `import your_core_library`.
+    *   **Core Library (Python Import Package) Name:** This template includes a core library in `src/your_core_library/`. This is the name you'll use in Python import statements (e.g., `import your_core_library`). If you change the `name` in `pyproject.toml` (the distribution name) to something different from `your_core_library`, or simply wish to rename the default importable package, you should also:
+        1.  Rename the directory: `src/your_core_library/` to `src/your_new_python_package_name/` (e.g., `src/my_awesome_lib/`).
+        2.  Update all import statements throughout the project. Key areas include: `examples/web/app/main.py`, `examples/cli.py`, `examples/data_pipeline.py`, and their corresponding tests in `tests/examples/`. For example, change `from your_core_library.data_handler import ...` to `from your_new_python_package_name.data_handler import ...`.
+        3.  Update configuration in `pyproject.toml`:
+            *   `[tool.hatch.build.targets.wheel]`: Change `packages = ["src/your_core_library"]` to `packages = ["src/your_new_python_package_name"]`.
+            *   `[tool.ruff.lint]`: If `your_core_library` is listed in `extend-select` or other Ruff settings, update it to `your_new_python_package_name`.
+            *   `[tool.mypy]`: If your package name is listed under `mypy` settings (e.g. in `packages` or explicit module lists), update it there.
+            *   `[tool.coverage.run]`: Update source paths if they explicitly mention `src/your_core_library`.
+        *   **Tip:** Use your IDE's "Find and Replace in Files" feature to update import statements and configurations across the codebase. Search for `your_core_library`.
 
 2.  **Replace General Placeholders:**
     *   Search globally in the project for `{{GITHUB_USERNAME}}` (e.g., in `README.md`, `mkdocs.yml`) and replace it with your actual GitHub username or organization name.
     *   Search globally for `{{PROJECT_SLUG}}` (this is often used for the repository name or display name, distinct from the Python package name, e.g., in `README.md`, `mkdocs.yml`) and replace it with your chosen project/repository name.
     *   **Tip:** Use your IDE's "Find and Replace in Files" feature for efficient global replacement of these placeholders.
-    *   **Key files to check for these placeholders:**
-        *   `README.md`
-        *   `pyproject.toml` (`[project.urls]`, `project.name` if you want it to match `{{PROJECT_SLUG}}`)
-        *   `mkdocs.yml` (`site_name`, `site_url`, `repo_url`)
-        *   `.github/workflows/ci.yml` (if any specific naming is used, though it's mostly generic)
+    *   **Key files and areas to check for these placeholders and other initial setup details:**
+        *   `README.md`: Update project title, description, and any URLs.
+        *   `pyproject.toml`:
+            *   `[project]`: Besides `name`, review and update `version`, `description`, `authors` (name and email: `authors = [{ name = "Your Name", email = "your@email.com" }]`), `keywords`, `classifiers`.
+            *   `[project.urls]`: Update URLs like "Homepage", "Repository", "Documentation".
+        *   `mkdocs.yml`: `site_name`, `site_url`, `repo_url`.
+        *   `.github/workflows/*.yml`: Check for any specific naming if you've customized workflow triggers or job names extensively. Usually, these are generic.
+        *   `CONTRIBUTING.md`: If it contains links back to the repository using placeholders, ensure they are updated.
 
 3.  **Update Documentation Settings (`mkdocs.yml`):**
     *   Open `mkdocs.yml`.
@@ -50,11 +52,11 @@ This guide provides detailed manual steps for initializing a new project from th
         *   Modify them for your needs.
         *   Remove any examples that are not relevant to your project.
         *   If you remove or significantly alter examples, remember to update:
-            *   `pyproject.toml`: Adjust `[tool.pytest.ini_options] testpaths` and `[tool.coverage.run] source` to reflect the changes.
+            *   `pyproject.toml`: Adjust `[tool.pytest.ini_options] testpaths` and `[tool.coverage.run] source` (and potentially `[tool.mypy]` configurations) to reflect the changes.
             *   `Taskfile.yml`: Remove or modify corresponding run tasks (e.g., `serve:web`, `run:cli`, `run:pipeline`).
-            *   The `Dockerfile` if you remove or rename the `examples/web/` application.
-    *   Review the main `README.md` and remove or adapt sections (like the original setup guide) to fit your project.
+            *   The `Dockerfile` if you remove or rename the `examples/web/` application or change its structure.
+    *   Review the main `README.md` and remove or adapt sections (like the original template's setup guide, features list) to fit your actual project.
     *   Update `LICENSE.md` if you choose a different license (the default is MIT).
-    *   Explore the `docs/` directory and adapt the existing guides or add your own project-specific documentation.
+    *   Explore the `docs/` directory and adapt the existing guides or add your own project-specific documentation. Remove or update links to guides you might have deleted (e.g., if you remove the AI-assisted setup).
 
 Once these steps are done, your project should be well-configured and ready for development!
