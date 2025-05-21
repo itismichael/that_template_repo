@@ -12,7 +12,7 @@ vars:
   RUFF: "{{.VENV_DIR}}/bin/ruff"
   BANDIT: "{{.VENV_DIR}}/bin/bandit"
   MKDOCS: "{{.VENV_DIR}}/bin/mkdocs"
-  IMAGE_NAME_LOCAL: "your-app-image" # Default image name
+  IMAGE_NAME_LOCAL: "your-project-image" # Default image name
   TAG: "latest"                 # Default tag
   PIP_AUDIT_OUTPUT_FORMAT: '{{default "columns" .PIP_AUDIT_OUTPUT_FORMAT}}'
   APP_PORT: '{{default "8000" .APP_PORT}}'
@@ -267,7 +267,7 @@ tasks:
     deps:
       - setup:env
     cmds:
-      - docker build -t {{.IMAGE_NAME_LOCAL | default "your-app-image"}} .
+      - docker build -t {{.IMAGE_NAME_LOCAL | default "your-project-image"}} .
     vars:
       IMAGE_NAME_LOCAL: "{{.IMAGE_NAME_LOCAL}}"
 
@@ -276,7 +276,7 @@ tasks:
     deps:
       - docker:build
     cmds:
-      - docker run -p {{.APP_PORT | default 8000}}:8000 {{.IMAGE_NAME_LOCAL | default "your-app-image"}}
+      - docker run -p {{.APP_PORT | default 8000}}:8000 {{.IMAGE_NAME_LOCAL | default "your-project-image"}}
     vars:
       APP_PORT: "{{.APP_PORT}}"
       IMAGE_NAME_LOCAL: "{{.IMAGE_NAME_LOCAL}}"

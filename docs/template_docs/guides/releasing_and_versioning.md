@@ -112,6 +112,36 @@ When you're ready to publish a new version:
        ```
        This task typically pushes the current branch and all tags (`git push origin <branch_name> --tags`).
 
+### Configuring `version_files` for Commitizen
+
+Commitizen uses the `version_files` setting in your `pyproject.toml` under `[tool.commitizen]` to determine which files and specific version strings to update when `cz bump` (or `task cz:bump`) is executed.
+
+It's crucial to configure this correctly, especially if you maintain version numbers in multiple places or want to ensure standard locations are updated.
+
+**Key Configuration:**
+
+To ensure that both the main project version (standardized under `[project].version` as per PEP 621) and Commitizen's own tracking version (`[tool.commitizen].version`) are kept in sync, list both paths in `version_files`:
+
+```toml
+# In pyproject.toml
+[tool.commitizen]
+# ... other settings ...
+version = "x.y.z" # This line should match [project].version
+version_files = [
+    "pyproject.toml:project.version",      # Targets [project] version = "x.y.z"
+    "pyproject.toml:tool.commitizen.version" # Targets [tool.commitizen] version = "x.y.z"
+    # Add other files here if needed, e.g., "src/your_package/__init__.py:^__version__"
+]
+# ... other settings ...
+```
+
+**Why both?**
+
+*   `"pyproject.toml:project.version"`: Ensures the PEP 621 standard `[project].version` is updated, which is what most Python tooling will look for.
+*   `"pyproject.toml:tool.commitizen.version"`: Ensures Commitizen's own reference (if you choose to keep it explicitly in `pyproject.toml` alongside a comment like `# Must match [project].version`) is also updated. This prevents `cz bump` from potentially using a stale version from `[tool.commitizen].version` as its baseline for the next bump.
+
+By listing both, you automate the synchronization, adhering to modern Python packaging standards while leveraging Commitizen's full capabilities.
+
 ### Troubleshooting a Failed Version Bump
 
 Sometimes, a version bump might not go as planned (e.g., an incorrect version is tagged, or the process fails midway). If you need to correct a bump:
