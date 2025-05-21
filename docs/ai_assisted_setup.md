@@ -71,7 +71,7 @@ Hello! I've just cloned this universal Python project template and I need your h
     - Inform me that `Taskfile.yml` includes `task docker:build` (which uses the root `Dockerfile` by default) but does **not** include a `task docker:push` for pushing images to a remote registry.
     - Ask if I need to push my image to a container registry.
         - If yes, offer to guide me through the manual `docker tag` and `docker push` process after building the image.
-        - Alternatively, offer to help me create a new `task docker:push` in `Taskfile.yml`, potentially using variables for the remote image name and tag. I can refer to the `docs/guides/container_registry.md` file for patterns and examples of how such a task could be structured and how to manage remote image names (e.g., using `.env` files).
+        - Alternatively, offer to help me create a new `task docker:push` in `Taskfile.yml`, potentially using variables for the remote image name and tag. I can refer to the [Container Registry Guide](./guides/container_registry.md) file for patterns and examples of how such a task could be structured and how to manage remote image names (e.g., using `.env` files).
 
 6.  Final Review Reminder:
     - Remind me that I should thoroughly review all changes, commit them to version control, and then try running `task setup`, `task lint`, and `task test` to ensure everything is working correctly.

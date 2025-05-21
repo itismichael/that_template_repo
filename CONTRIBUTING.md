@@ -1,15 +1,15 @@
-# Contributing to [Your Project Name]
+# Contributing to {{PROJECT_NAME}}
 
-We welcome contributions to [Your Project Name]! Please follow these guidelines to help us manage the process effectively.
+We welcome contributions to {{PROJECT_NAME}}! Please follow these guidelines to help us manage the process effectively.
 
 ## Getting Started
 
 - Ensure you have Python 3.11 or higher installed.
-- Ensure you have `task` (Go Task runner) installed. See https://taskfile.dev/installation/
+- Ensure you have `task` (Go Task runner) installed. See [Task Installation](https://taskfile.dev/installation/)
 - Clone the repository:
   ```bash
-  git clone <repository-url>
-  cd [Your Project Name]
+  git clone https://github.com/{{GITHUB_USERNAME}}/{{PROJECT_SLUG}}.git
+  cd {{PROJECT_SLUG}}
   ```
 - Initialize the project environment and install dependencies:
   ```bash
@@ -31,7 +31,7 @@ We welcome contributions to [Your Project Name]! Please follow these guidelines 
 - Ensure your changes pass all tests (`task test`).
 - Add new tests for new features or bug fixes.
 - Update documentation if necessary.
-- Commit your changes with a clear and descriptive commit message. For detailed instructions on the commit process, including how to work with pre-commit hooks and Commitizen, please see the [Releasing and Versioning Guide](./docs/guides/releasing_and_versioning.md).
+- Commit your changes with a clear and descriptive commit message. For detailed instructions on the commit process, including how to work with pre-commit hooks and Commitizen, please see the [Releasing and Versioning Guide](https://github.com/{{GITHUB_USERNAME}}/{{PROJECT_SLUG}}/blob/main/docs/guides/releasing_and_versioning.md).
 
 ## Submitting a Pull Request
 

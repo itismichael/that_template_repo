@@ -20,10 +20,12 @@ Directly using `.env` files in production or staging environments is generally d
 - **Security Risks:**
     - **Accidental Exposure:** If deployed with application code, they could be inadvertently exposed through web server misconfigurations or if the application code itself is compromised.
     - **Version Control Mistakes:** Even with `.gitignore`, there's always a risk of accidental commits if not handled carefully across a team.
-- **Operational Overhead:** Managing different `.env` files for various environments and ensuring they are securely distributed to servers is cumbersome and error-prone.
-- **Lack of Auditability & Control:** `.env` files don't offer features like access control, versioning of secrets, or audit trails that dedicated secret management systems provide.
+- **Operational Overhead:** Managing different `.env` files for various environments and ensuring they are securely distributed to servers can be cumbersome and error-prone.
+- **Lack of Auditability & Control:** `.env` files typically lack features like access control, versioning of secrets, or audit trails that dedicated secret management systems provide.
 
 ## Recommended Practices for Deployed Environments
+
+For staging, production, or any shared cloud environment, adopt more secure and scalable strategies:
 
 ### 1. True Environment Variables (12-Factor App Principles)
 
@@ -82,7 +84,8 @@ Leverage the native configuration and secret management features of your deploym
 
     settings = Settings()
     ```
-- **`.gitignore`:** Includes `.env` to prevent accidental commits.
-- **`Dockerfile`:** Avoids copying `.env` files into the image.
+- **`.gitignore`:** Includes `.env` by default to prevent accidental commits of local environment settings.
+- **`Dockerfile`:** The provided `Dockerfile` is designed to avoid copying `.env` files into the image, relying on environment variables to be injected at runtime.
+- **Pre-commit Hooks:** This template often includes `detect-secrets` in its pre-commit hooks (see `.pre-commit-config.yaml`). This tool scans for accidentally committed secrets before they even make it into your commit history, providing an important layer of defense.
 
-By adhering to these practices, you can ensure that your application's configuration and secrets are managed securely and efficiently across all environments.
+By adhering to these practices and utilizing the tools provided, you can significantly improve the security posture of your application's configuration and secret management across all environments.
