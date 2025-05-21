@@ -4,6 +4,9 @@ site_url: "https://{{GITHUB_USERNAME}}.github.io/{{PROJECT_SLUG}}/" # TODO: Repl
 repo_url: "https://github.com/{{GITHUB_USERNAME}}/{{PROJECT_SLUG}}" # TODO: Replace
 repo_name: "{{GITHUB_USERNAME}}/{{PROJECT_SLUG}}" # TODO: Replace
 
+# Standard docs directory
+docs_dir: docs
+
 theme:
   name: material
   features:
@@ -14,7 +17,7 @@ theme:
     - search.suggest
     - search.highlight
     - content.tabs.link
-    - content.code.annotation
+    - content.code.annotate
     - content.code.copy
   language: en
   palette:
@@ -30,6 +33,11 @@ theme:
 plugins:
   - search
 
+# Include README.md and CONTRIBUTING.md in the site
+extra:
+  README.md: README.md
+  CONTRIBUTING.md: CONTRIBUTING.md
+
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
@@ -41,23 +49,23 @@ markdown_extensions:
       custom_fences:
         - name: mermaid
           class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
+          format: ! fence_code_format
   - admonition
   - toc:
       permalink: true
 
 # Page tree
 nav:
-  - Home: template_docs/index.md
-  - Installation: template_docs/installation.md
-  - Configuration: template_docs/configuration.md
-  - Usage: template_docs/usage.md
+  - Home: index.md
+  - Installation: installation.md
+  - Configuration: configuration.md
+  - Usage: usage.md
   - Guides:
-    - Container Registries: template_docs/guides/container_registry.md
-    - Development Troubleshooting: template_docs/guides/development_troubleshooting.md
-    - Security & Secrets: template_docs/guides/security_and_secrets.md
-    - Manual Setup: template_docs/guides/manual_setup.md
-    - Releasing & Versioning: template_docs/guides/releasing_and_versioning.md
+    - Container Registries: guides/container_registry.md
+    - Development Troubleshooting: guides/development_troubleshooting.md
+    - Security & Secrets: guides/security_and_secrets.md
+    - Manual Setup: guides/manual_setup.md
+    - Releasing & Versioning: guides/releasing_and_versioning.md
   - Setup & Philosophy:
-    - AI-Assisted Setup: template_docs/ai_assisted_setup.md
-    - Design Philosophy & FAQ: template_docs/design_philosophy.md
+    - AI-Assisted Setup: ai_assisted_setup.md
+    - Design Philosophy & FAQ: design_philosophy.md

@@ -79,8 +79,8 @@ These examples utilize the core library and can be customized or removed as need
 ## Next Steps
 
 - Explore the **Guides** section for detailed information on specific topics like container registries or security.
-- Check out the [main project README.md](../../README.md) on GitHub for overall project setup and usage.
+- Check out the [main project README.md](https://github.com/{{GITHUB_USERNAME}}/{{PROJECT_SLUG}}/blob/main/README.md) on GitHub for overall project setup and usage.
 
 ## Contributing
 
-If you'd like to contribute, please see the [Contributing Guidelines](../../CONTRIBUTING.md).
+If you'd like to contribute, please see the [Contributing Guidelines](https://github.com/{{GITHUB_USERNAME}}/{{PROJECT_SLUG}}/blob/main/CONTRIBUTING.md).

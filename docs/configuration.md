@@ -55,6 +55,6 @@ When you first set up a project from the Catalyst Kit template, you'll typically
 *   These initial customizations are critical as they affect import paths, script configurations, and metadata in files like `pyproject.toml`, `Taskfile.yml`, and documentation.
 *   For detailed instructions on performing this initial template customization, please refer to the guides:
     *   [Manual Setup Guide](./guides/manual_setup.md)
-    *   [AI-Assisted Setup Guide](./guides/ai_assisted_setup.md) (if applicable)
+    *   [AI-Assisted Setup Guide](./ai_assisted_setup.md)
 
 By understanding these configuration aspects, you can effectively manage and adapt your Catalyst Kit-based project.

@@ -11,7 +11,7 @@ Before you begin, ensure you have the following tools installed on your system:
 *   **Task:** A task runner used for project automation (`taskfile.dev`).
 *   **Docker and Docker Compose:** Recommended for full functionality, including running containerized services and ensuring consistent environments.
 
-Please refer to the main project [README.md](../../README.md) for links and installation instructions for these tools.
+Please refer to the main project [README.md](https://github.com/{{GITHUB_USERNAME}}/{{PROJECT_SLUG}}/blob/main/README.md) for links and installation instructions for these tools.
 
 ## Setup Steps
 
